@@ -30,12 +30,12 @@
         </div>
         <nav>
           <ul class="menu">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About Us</a></li>
-            <li><a href="maintenance.html">Maintenance </a></li>
-            <li><a href="repair.html">Repair</a></li>
-            <li><a class="active" href="price.html">Price List</a></li>
-            <li><a href="locations.html">Locations</a></li>
+            <li><a href="homep.php">Home</a></li>
+            <li><a href="about.php">About Us</a></li>
+            <li><a href="maintenance.php">Maintenance </a></li>
+            <li><a href="repair.php">Repair</a></li>
+            <li><a class="active" href="price.php">Price List</a></li>
+            <li><a href="locations.php">Locations</a></li>
           </ul>
         </nav>
       </div>

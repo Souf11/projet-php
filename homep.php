@@ -94,7 +94,7 @@ $conn->close();
     <header>
       <div class="main">
         <div class="wrapper">
-          <h1><a href="index.html">Car Repair</a></h1>
+          <h1><a href="homep.php">Car Repair</a></h1>
           <div class="fright">
             <div class="indent"> <span class="address">8901 Marmora Road, Glasgow, D04 89GR</span> <span class="phone">Tel: +1 959 552 5963</span> </div>
           </div>
@@ -102,11 +102,11 @@ $conn->close();
         <nav>
     <ul class="menu">
         <li><a class="active" href="homep.php">Home</a></li>
-        <li><a href="about.html">About Us</a></li>
-        <li><a href="maintenance.html">Maintenance</a></li>
-        <li><a href="repair.html">Repair</a></li>
-        <li><a href="price.html">Price List</a></li>
-        <li><a href="locations.html">Locations</a></li>
+        <li><a href="about.php">About Us</a></li>
+        <li><a href="maintenance.php">Maintenance</a></li>
+        <li><a href="repair.php">Repair</a></li>
+        <li><a href="price.php">Price List</a></li>
+        <li><a href="locations.php">Locations</a></li>
 
         <!-- Profile Element -->
         <?php if (isset($_SESSION['user_email'])): ?>
