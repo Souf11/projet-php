@@ -50,7 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['sign_in'])) {
             // Start session and set user session variable
             session_start();
             $_SESSION['user_email'] = $email; // Store email in session
-            header("Location:homep.php"); 
+            header("Location: homep.php"); // Redirect to home page after successful login
             exit();
         } else {
             echo "Incorrect password!";
@@ -91,7 +91,7 @@ $conn->close();
 
     <!-- Sign In Form -->
     <div class="form-container sign-in-container">
-        <form method="POST" action="homep.php">
+        <form method="POST" action="">
             <h1>Sign In</h1>
             <input type="email" name="email" placeholder="Email" required />
             <input type="password" name="password" placeholder="Password" id="login-password" required />
