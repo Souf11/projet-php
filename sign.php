@@ -1,4 +1,4 @@
-<?php
+<?php 
 include 'db.php'; // Include the database connection file
 
 // Handle Sign-Up
@@ -17,14 +17,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['sign_up'])) {
     $result = $check_email->get_result();
 
     if ($result->num_rows > 0) {
-        echo "This email is already registered.";
+        echo "<script>alert('This email is already registered. Please use another one.');</script>";
     } else {
         // Insert the user data into the database
         $stmt = $conn->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
         $stmt->bind_param("sss", $name, $email, $hashed_password);
 
         if ($stmt->execute()) {
-            echo "Sign Up successful!";
+            // Refresh the page after sign-up
+            echo "<script>alert('Sign Up successful! Please log in.'); window.location.href = '';</script>";
+            exit();
         } else {
             echo "Error: " . $stmt->error;
         }
@@ -53,10 +55,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['sign_in'])) {
             header("Location: homep.php"); // Redirect to home page after successful login
             exit();
         } else {
-            echo "Incorrect password!";
+            echo "<script>alert('Incorrect password!');</script>";
         }
     } else {
-        echo "No user found with that email!";
+        echo "<script>alert('No user found with that email!');</script>";
     }
 
     $stmt->close();
@@ -77,7 +79,7 @@ $conn->close();
 <div class="container" id="container">
     <!-- Sign Up Form -->
     <div class="form-container sign-up-container">
-        <form method="POST" action="homep.php">
+        <form method="POST" action="">
             <h1>Create Account</h1>
             <input type="text" name="name" placeholder="Name" required />
             <input type="email" name="email" placeholder="Email" required />
