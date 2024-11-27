@@ -121,6 +121,6 @@ $conn->close();
     </div>
 </div>
 
-<script src="www.js"></script> <!-- Ensure this path is correct -->
+<script src="www.js"></script> 
 </body>
 </html>
