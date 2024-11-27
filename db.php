@@ -1,14 +1,32 @@
 <?php
-$servername = "localhost";
-$username = "root";          // Replace with your MySQL username
-$password = "";              // Replace with your MySQL password
-$dbname = "tech_temple";     // Replace with your database name
+class Database {
+    private $host = 'localhost';
+    private $dbname = 'tech_temple';  // Database name
+    private $username = 'root';       // MySQL username
+    private $password = '';           // MySQL password
+    private $conn;
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
+    // Constructor to initialize the connection
+    public function __construct() {
+        try {
+            // Using PDO to connect to the database
+            $this->conn = new PDO("mysql:host={$this->host};dbname={$this->dbname}", $this->username, $this->password);
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
+    }
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    // Method to get the connection object
+    public function getConnection() {
+        return $this->conn;
+    }
+
+    // Method to execute a query
+    public function query($sql, $params = []) {
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($params);
+        return $stmt;
+    }
 }
 ?>

@@ -2,67 +2,67 @@
 session_start(); // Start the session
 include 'db.php'; // Include the database connection file
 
+// Initialize the database connection
+$db = new Database();
+$conn = $db->getConnection();
+
 // Handle Sign-Up
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['sign_up'])) {
-    $name = mysqli_real_escape_string($conn, $_POST['name']);
-    $email = mysqli_real_escape_string($conn, $_POST['email']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']);
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
 
     // Hash the password
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
     // Check if the email already exists
-    $check_email = $conn->prepare("SELECT * FROM users WHERE email=?");
-    $check_email->bind_param("s", $email);
+    $check_email = $conn->prepare("SELECT * FROM users WHERE email = :email");
+    $check_email->bindParam(':email', $email);
     $check_email->execute();
-    $result = $check_email->get_result();
 
-    if ($result->num_rows > 0) {
+    if ($check_email->rowCount() > 0) {
         echo "This email is already registered.";
     } else {
         // Insert the user data into the database
-        $stmt = $conn->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $name, $email, $hashed_password);
+        $stmt = $conn->prepare("INSERT INTO users (name, email, password) VALUES (:name, :email, :password)");
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':password', $hashed_password);
 
         if ($stmt->execute()) {
             echo "Sign Up successful!";
         } else {
-            echo "Error: " . $stmt->error;
+            echo "Error: " . $stmt->errorInfo()[2];
         }
-
-        $stmt->close();
     }
 }
 
 // Handle Sign-In
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['sign_in'])) {
-    $email = mysqli_real_escape_string($conn, $_POST['email']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']);
+    $email = $_POST['email'];
+    $password = $_POST['password'];
 
     // Query to find user by email
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email=?");
-    $stmt->bind_param("s", $email);
+    $stmt = $conn->prepare("SELECT * FROM users WHERE email = :email");
+    $stmt->bindParam(':email', $email);
     $stmt->execute();
-    $result = $stmt->get_result();
 
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
+    if ($stmt->rowCount() > 0) {
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if (password_verify($password, $row['password'])) {
-            header("../projet/proj/homep.php");
-            // Redirect to another page after successful login (e.g., dashboard)
-            // header("Location: dashboard.php");
+            // If login is successful, store session data and redirect
+            $_SESSION['user_email'] = $email; // Store email in session
+            header("Location: homep.php"); // Redirect to home page after successful login
+            exit();
         } else {
             echo "Incorrect password!";
         }
     } else {
         echo "No user found with that email!";
     }
-
-    $stmt->close();
 }
-
-$conn->close();
 ?>
+
 
 
 <!DOCTYPE html>
