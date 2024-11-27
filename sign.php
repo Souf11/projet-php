@@ -114,7 +114,7 @@ $conn->close();
             </div>
             <div class="overlay-panel overlay-right">
                 <h1>Hello!</h1>
-                <p>Welcome to TechTemple</p>
+                <p>Welcome</p>
                 <button class="ghost" id="signUp">Sign Up</button>
             </div>
         </div>
