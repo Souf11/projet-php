@@ -2,23 +2,74 @@
 session_start(); // Start the session
 include 'db.php'; // Include the database connection
 
+// Enable error reporting for debugging
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 // Initialize the locations variable
 $locations = [];
 
-// If the page is loaded, fetch the locations data from the database
+// Fetch locations data from the database
 try {
     $db = new Database();
     $conn = $db->getConnection();
 
-    // Query to get all locations (adjust to your actual table structure)
-    $stmt = $conn->query("SELECT * FROM locations");
-
-    // Fetch all the locations from the database
+    // Query to get all locations
+    $stmt = $conn->query("SELECT * FROM location");
     $locations = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (Exception $e) {
+} catch (PDOException $e) {
+    error_log("Database connection failed: " . $e->getMessage());
+    echo "There was an error processing your request. Please try again later.";
+}
 
+// Handle form submission
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Check if the user is logged in
+    if (!isset($_SESSION['user_email'])) {
+        // If not logged in, display a message
+        echo "<script>
+            alert('Please log in first to submit the form.');
+            window.location.href = 'sign.php'; // Redirect to login page
+        </script>";
+        exit();
+    }
+
+    // Get and sanitize form inputs
+    $name = htmlspecialchars(trim($_POST['name']));
+    $phone = htmlspecialchars(trim($_POST['phone']));
+    $marque = htmlspecialchars(trim($_POST['marque']));
+    $message = htmlspecialchars(trim($_POST['message']));
+
+    try {
+        // Prepare SQL to insert data
+        $stmt = $conn->prepare("INSERT INTO location (name, phone, marque, message) 
+                                VALUES (:name, :phone, :marque, :message)");
+
+        // Bind parameters to query
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':phone', $phone);
+        $stmt->bindParam(':marque', $marque);
+        $stmt->bindParam(':message', $message);
+
+        // Execute query and check result
+        if ($stmt->execute()) {
+            echo "<script>
+                alert('Your information has been successfully submitted!');
+                window.location.href = 'locations.php'; // Redirect back to locations page
+            </script>";
+            exit();
+        } else {
+            echo "<p>There was an error submitting your information. Please try again.</p>";
+        }
+    } catch (PDOException $e) {
+        error_log("Error during data insertion: " . $e->getMessage());
+        echo "<p>There was an error processing your request. Please try again later.</p>";
+    }
 }
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -67,7 +118,7 @@ try {
             <li><span class="account">Profile: <?php echo htmlspecialchars($_SESSION['user_email']); ?></span></li>
             <li><a href="logout.php" class="logout">Logout</a></li>
         <?php else: ?>
-            <li><a href="login.php">Login</a></li>
+            <li><a href="sign.php">Login</a></li>
         <?php endif; ?>
     </ul>
 </nav>
@@ -80,8 +131,8 @@ try {
                 <div class="container_12">
                     <div class="wrapper p5">
                         <!-- Dynamic Locations List -->
-                        <?php if (!empty($locations)): ?>
-                            <?php foreach ($locations as $location): ?>
+                        <?php if (!empty($location)): ?>
+                            <?php foreach ($location as $location): ?>
                                 <article class="grid_4">
                                     <div class="wrapper">
                                         <figure class="img-indent"><img src="images/page1-img1.png" alt=""></figure>
@@ -100,35 +151,52 @@ try {
                         <div class="container-top">
                             <div class="container">
                                 <div class="wrapper">
-                                    <article class="grid_8">
-                                        <div class="indent-left">
-                                            <h3 class="p1">Feedback</h3>
-                                            <form id="contact-form" action="#" method="post" enctype="multipart/form-data">
-                                                <fieldset>
-                                                    <label><span class="text-form">Name:</span>
-                                                        <input name="name" type="text" />
-                                                    </label>
-                                                    <label><span class="text-form">Email:</span>
-                                                        <input name="email" type="text" />
-                                                    </label>
-                                                    <label><span class="text-form">Phone:</span>
-                                                        <input name="phone" type="text" />
-                                                    </label>
-                                                    <div class="wrapper">
-                                                        <div class="text-form">Message:</div>
-                                                        <div class="extra-wrap">
-                                                            <textarea></textarea>
-                                                            <div class="clear"></div>
-                                                            <div class="buttons">
-                                                                <a class="button" href="#">Clear</a>
-                                                                <a class="button" href="#">Send</a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </fieldset>
-                                            </form>
-                                        </div>
-                                    </article>
+                                <article class="grid_8">
+    <div class="indent-left">
+        <h3 class="p1">Demande de location</h3>
+        <form id="contact-form" action="locations.php" method="post">
+            <fieldset>
+                <!-- Name Field -->
+                <label><span class="text-form">Name:</span>
+                    <input name="name" type="text" required />
+                </label>
+
+                <!-- Phone Field -->
+                <label><span class="text-form">Phone:</span>
+                    <input name="phone" type="text" pattern="\d+" title="Please enter a valid phone number" required />
+                </label>
+
+                <!-- Marque Field -->
+                <label><span class="text-form">Marque:</span>
+                    <select name="marque" required>
+                        <option value="">Select a marque</option>
+                        <option value="audi">Audi A3</option>
+                        <option value="honda">Hyundai Accent</option>
+                        <option value="toyota">Toyota Yaris</option>
+                        <option value="ford">Ford</option>
+                        <option value="bmw">BMW</option>
+                        <option value="mercedes">Mercedes A</option>
+                    </select>
+                </label>
+
+                <!-- Message Field -->
+                <label>
+                    <span class="text-form">Message:</span>
+                    <textarea name="message" required></textarea>
+                </label>
+
+                <!-- Buttons -->
+                <div class="clear"></div>
+                <div class="buttons">
+                    <button type="reset" class="button">Clear</button>
+                    <input type="submit" class="button" value="Send">
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</article>
+
+
                                     <article class="grid_4">
                                         <div class="indent-left2 indent-top">
                                             <div class="box p4">

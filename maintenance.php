@@ -120,7 +120,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['sign_in'])) {
             <li><span class="account">Profile: <?php echo htmlspecialchars($_SESSION['user_email']); ?></span></li>
             <li><a href="logout.php" class="logout">Logout</a></li>
         <?php else: ?>
-            <li><a href="login.php">Login</a></li>
+            <li><a href="sign.php">Login</a></li>
         <?php endif; ?>
     </ul>
 </nav>
