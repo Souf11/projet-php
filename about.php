@@ -71,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['sign_in'])) {
 <title>Car Repair | About</title>
 <meta charset="utf-8">
 <link rel="stylesheet" href="css/reset.css" type="text/css" media="screen">
-<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
+<link rel="stylesheet" href="css/style-new.css" type="text/css" media="screen">
 <link rel="stylesheet" href="css/grid.css" type="text/css" media="screen">
 <script src="js/jquery-1.7.1.min.js" type="text/javascript"></script>
 <script src="js/cufon-yui.js" type="text/javascript"></script>
@@ -97,21 +97,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['sign_in'])) {
           </div>
         </div>
         <nav>
-          <ul class="menu">
-            <li><a href="homep.php">Home</a></li>
-            <li><a class="active" href="about.php">About Us</a></li>
-            <li><a href="maintenance.php">Maintenance </a></li>
-            <li><a href="repair.php">Repair</a></li>
-            <li><a href="price.php">Price List</a></li>
-            <li><a href="locations.php">Locations</a></li>
-            <!-- Profile Element -->
+    <ul class="menu">
+        <li><a class="active" href="homep.php">Home</a></li>
+        <li><a href="about.php">About Us</a></li>
+        <li><a href="maintenance.php">Maintenance</a></li>
+        <li><a href="repair.php">Repair</a></li>
+        <li><a href="price.php">Price List</a></li>
+        <li><a href="locations.php">Locations</a></li>
+
+        <!-- Profile Element -->
         <?php if (isset($_SESSION['user_email'])): ?>
-            <li><a href="profile.php">Profile: <?php echo htmlspecialchars($_SESSION['user_email']); ?></a></li>
+            <li><span class="account">Profile: <?php echo htmlspecialchars($_SESSION['user_email']); ?></span></li>
+            <li><a href="logout.php" class="logout">Logout</a></li>
         <?php else: ?>
             <li><a href="login.php">Login</a></li>
         <?php endif; ?>
-          </ul>
-        </nav>
+    </ul>
+</nav>
       </div>
     </header>
     <!--==============================content================================-->

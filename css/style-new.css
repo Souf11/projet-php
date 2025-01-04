@@ -239,6 +239,7 @@ header nav {
 .menu > li:first-child > a.active, .menu > li:first-child > a:hover {
 	background-position:center 15px;
 }
+
 /***** slider *****/
 .slider-wrapper {
 	width:960px;
