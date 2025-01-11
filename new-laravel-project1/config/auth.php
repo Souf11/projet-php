@@ -35,12 +35,27 @@ return [
     |
     */
 
-    'guards' => [
-        'web' => [
+
+'guards' => [
+    'web' => [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+    'professeur' => [
+        'driver' => 'session',
+        'provider' => 'professeurs',
     ],
+],
+
+'providers' => [
+    // Existing providers...
+
+    'professeurs' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\Professeur::class,
+    ],
+],
 
     /*
     |--------------------------------------------------------------------------

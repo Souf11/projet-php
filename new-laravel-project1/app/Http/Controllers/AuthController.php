@@ -9,8 +9,8 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
-    // Sign-Up method
-    public function signUp(Request $request)
+    // Professeur Sign-Up
+    public function signUpProfesseur(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -18,19 +18,18 @@ class AuthController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        // Create user with role
-        $user = User::create([
+        // Create the Professeur user
+        User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'user', // Set a default role for the user
         ]);
 
-        return redirect()->route('login')->with('success', 'Sign-up successful!');
+        return redirect()->route('professeur.login')->with('success', 'Sign-up successful!');
     }
 
-    // Sign-In method
-    public function signIn(Request $request)
+    // Professeur Login
+    public function signInProfesseur(Request $request)
     {
         $request->validate([
             'email' => 'required|email',
@@ -38,22 +37,15 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($request->only('email', 'password'))) {
-            // Redirect based on the user's role
-            if (Auth::user()->role === 'administrateur') {
-                return redirect()->route('admin.dashboard');
-            } elseif (Auth::user()->role === 'professeur') {
-                return redirect()->route('professeur.dashboard');
-            } else {
-                return redirect()->route('home'); // Default fallback
-            }
+            return redirect()->route('professeur.dashboard');
         } else {
             return back()->withErrors(['email' => 'Invalid credentials']);
         }
     }
 
-    // Home method (after login)
-    public function home()
+    // Professeur Dashboard
+    public function professeurDashboard()
     {
-        return view('home');
+        return view('professeur.dashboard');
     }
 }

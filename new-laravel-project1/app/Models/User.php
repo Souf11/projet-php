@@ -19,7 +19,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',           // Allow mass-assignment for role
+        'last_login_at',  // Track last login timestamp
+        'last_login_ip',  // Track last login IP
     ];
+    
 
     /**
      * The attributes that should be hidden for serialization.
